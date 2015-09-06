@@ -3,11 +3,15 @@
 class FreshRSS_EntryDAO extends Minz_ModelPdo implements FreshRSS_Searchable {
 
 	public function isCompressed() {
-		return parent::$sharedDbType !== 'sqlite';
+		return parent::$sharedDbType === 'mysql';
 	}
 
 	public function hasNativeHex() {
 		return parent::$sharedDbType !== 'sqlite';
+	}
+
+	public function hasNativeDate() {
+		return parent::$sharedDbType === 'mysql5.6';
 	}
 
 	protected function addColumn($name) {
@@ -68,7 +72,8 @@ class FreshRSS_EntryDAO extends Minz_ModelPdo implements FreshRSS_Searchable {
 			     . ', link, date, lastSeen, hash, is_read, is_favorite, id_feed, tags) '
 			     . 'VALUES(?, ?, ?, ?, '
 			     . ($this->isCompressed() ? 'COMPRESS(?)' : '?')
-			     . ', ?, ?, ?, '
+			     . ', ?, '
+			     . ($this->hasNativeDate() ? 'FROM_UNIXTIME(?), FROM_UNIXTIME(?), ' : '?, ?, ')
 			     . ($this->hasNativeHex() ? 'X?' : '?')
 			     . ', ?, ?, ?, ?)';
 			$this->addEntryPrepared = $this->bd->prepare($sql);
@@ -115,8 +120,9 @@ class FreshRSS_EntryDAO extends Minz_ModelPdo implements FreshRSS_Searchable {
 			$sql = 'UPDATE `' . $this->prefix . 'entry` '
 			     . 'SET title=?, author=?, '
 			     . ($this->isCompressed() ? 'content_bin=COMPRESS(?)' : 'content=?')
-			     . ', link=?, date=?, lastSeen=?, hash='
-			     . ($this->hasNativeHex() ? 'X?' : '?')
+			     . ', link=?, '
+			     . ($this->hasNativeDate() ? 'date=FROM_UNIXTIME(?), lastSeen=FROM_UNIXTIME(?)' : 'date=?, lastSeen=?')
+			     . ', hash=' . ($this->hasNativeHex() ? 'X?' : '?')
 			     . ', ' . ($valuesTmp['is_read'] === null ? '' : 'is_read=?, ')
 			     . 'tags=? '
 			     . 'WHERE id_feed=? AND guid=?';
@@ -540,11 +546,11 @@ class FreshRSS_EntryDAO extends Minz_ModelPdo implements FreshRSS_Searchable {
 				$values[] = "{$filter->getMaxDate()}000000";
 			}
 			if ($filter->getMinPubdate()) {
-				$search .= 'AND e1.date >= ? ';
+				$search .= 'AND e1.date >= ' . ($this->hasNativeDate() ? 'FROM_UNIXTIME(?) ' : '? ');
 				$values[] = $filter->getMinPubdate();
 			}
 			if ($filter->getMaxPubdate()) {
-				$search .= 'AND e1.date <= ? ';
+				$search .= 'AND e1.date <= ' . ($this->hasNativeDate() ? 'FROM_UNIXTIME(?) ' : '? ');
 				$values[] = $filter->getMaxPubdate();
 			}
 			if ($filter->getTags()) {
@@ -724,7 +730,7 @@ class FreshRSS_EntryDAO extends Minz_ModelPdo implements FreshRSS_Searchable {
 				$dao['author'],
 				$dao['content'],
 				$dao['link'],
-				$dao['date'],
+				$this->hasNativeDate() ? strtotime($dao['date']) : $dao['date'],
 				$dao['is_read'],
 				$dao['is_favorite'],
 				$dao['tags']

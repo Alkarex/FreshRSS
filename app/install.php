@@ -26,6 +26,9 @@ if (STEP === 3 && isset($_POST['type'])) {
 
 if (isset($_SESSION['bd_type'])) {
 	switch ($_SESSION['bd_type']) {
+	case 'mysql5.6':
+		include(APP_PATH . '/SQL/install.sql.mysql5.6.php');
+		break;
 	case 'mysql':
 		include(APP_PATH . '/SQL/install.sql.mysql.php');
 		break;
@@ -250,6 +253,7 @@ function saveStep3() {
 function newPdo() {
 	switch ($_SESSION['bd_type']) {
 	case 'mysql':
+	case 'mysql5.6':
 		$str = 'mysql:host=' . $_SESSION['bd_host'] . ';dbname=' . $_SESSION['bd_base'];
 		$driver_options = array(
 			PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
@@ -432,6 +436,7 @@ function checkBD() {
 		$driver_options = null;
 		switch ($_SESSION['bd_type']) {
 		case 'mysql':
+		case 'mysql5.6':
 			$driver_options = array(
 				PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
 			);
@@ -790,6 +795,10 @@ function printStep3() {
 				<?php if (extension_loaded('pdo_mysql')) {?>
 				<option value="mysql"
 					<?php echo(isset($_SESSION['bd_type']) && $_SESSION['bd_type'] === 'mysql') ? 'selected="selected"' : ''; ?>>
+					MySQL
+				</option>
+				<option value="mysql5.6"
+					<?php echo(isset($_SESSION['bd_type']) && $_SESSION['bd_type'] === 'mysql5.6') ? 'selected="selected"' : ''; ?>>
 					MySQL
 				</option>
 				<?php }?>

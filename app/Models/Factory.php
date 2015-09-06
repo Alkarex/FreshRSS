@@ -13,11 +13,13 @@ class FreshRSS_Factory {
 
 	public static function createEntryDao($username = null) {
 		$conf = Minz_Configuration::get('system');
-		if ($conf->db['type'] === 'sqlite') {
-			return new FreshRSS_EntryDAOSQLite($username);
-		} else {
-			return new FreshRSS_EntryDAO($username);
+		switch ($conf->db['type']) {
+			case 'mysql5.6':
+				return new FreshRSS_EntryDAOMySQL56($username);
+			case 'sqlite':
+				return new FreshRSS_EntryDAOSQLite($username);
 		}
+		return new FreshRSS_EntryDAO($username);
 	}
 
 	public static function createStatsDAO($username = null) {
