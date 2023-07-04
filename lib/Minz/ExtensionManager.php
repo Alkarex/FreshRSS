@@ -82,6 +82,10 @@ final class Minz_ExtensionManager {
 			'list' => array(),
 			'signature' => 'PassArguments',
 		),
+		'sql_list_entries' => array(	// function(array $tuple) -> array
+			'list' => array(),
+			'signature' => 'OneToOne',
+		),
 	);
 
 	/** Remove extensions and hooks from a previous initialisation */

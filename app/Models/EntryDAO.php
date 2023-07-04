@@ -1055,6 +1055,9 @@ SQL;
 				$values = array_merge($values, $filterValues);
 			}
 		}
+
+		[$search, $values] = Minz_ExtensionManager::callHook('sql_list_entries', [$search, $values, func_get_args()]);
+
 		return array($values, $search);
 	}
 

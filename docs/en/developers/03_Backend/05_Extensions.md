@@ -161,6 +161,10 @@ The following events are available:
 * `nav_reading_modes` (`function($reading_modes) -> array | null`): **TODO** add documentation.
 * `post_update` (`function(none) -> none`): **TODO** add documentation.
 * `simplepie_before_init` (`function($simplePie, $feed) -> none`): **TODO** add documentation.
+* `sql_list_entries` (`function(array $triple): array`): called during the creation of an SQL query to search entries.
+	The first element of the triple is the parametrized SQL string,
+	the second is an array of the corresponding parameter values,
+	and the third is an array containing the parameters used to call the function `FreshRSS_EntryDAO->sqlListEntriesWhere()`.
 
 ### Writing your own configure.phtml
 

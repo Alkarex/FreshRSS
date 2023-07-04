@@ -237,6 +237,11 @@ The following events are available:
 * `post_update` (`function(none) -> none`): **TODO** add documentation
 * `simplepie_before_init` (`function($simplePie, $feed) -> none`): **TODO**
 	add documentation
+* `sql_list_entries` (`function(array $triple): array`):
+	appelé durant la création de la requête SQL pour rechercher des entrées.
+	Le premier élément du triple est l’expression SQL paramétrisée,
+	le second élément est un tableau des valeurs des paramètres,
+	et le troisième est un tableau des paramètres utilisés pour appeler la fonction `FreshRSS_EntryDAO->sqlListEntriesWhere()`
 
 ### Writing your own configure.phtml
 
