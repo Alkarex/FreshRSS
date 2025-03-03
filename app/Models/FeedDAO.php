@@ -580,8 +580,9 @@ SQL;
 			if (!is_string($dao['name'] ?? null)) {
 				continue;
 			}
+			FreshRSS_DatabaseDAO::pdoInt($dao, ['id', 'kind', 'category', 'lastUpdate', 'priority', 'error', 'ttl', 'cache_nbUnreads', 'cache_nbEntries']);
 			if ($catID === null) {
-				$category = is_numeric($dao['category'] ?? null) ? (int)$dao['category'] : 0;
+				$category = $dao['category'] ?? 0;
 			} else {
 				$category = $catID;
 			}

@@ -140,6 +140,7 @@ SQL;
 			return;
 		}
 		while ($row = $stm->fetch(PDO::FETCH_ASSOC)) {
+			FreshRSS_DatabaseDAO::pdoInt($row, ['id_tag']);
 			/** @var array{id_tag:int,id_entry:int|numeric-string}> $row */
 			yield $row;	// @phpstan-ignore generator.valueType
 		}

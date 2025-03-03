@@ -462,4 +462,18 @@ SQL;
 
 		return true;
 	}
+
+	/**
+	 * Ensure that some PDO columns are `int` and not `string`.
+	 * Compatibility with PHP <= 8.0, 32-bit, and maybe other cases.
+	 * @param array<string|int|bool|null> $table
+	 * @param array<string> $columns
+	 */
+	public static function pdoInt(array &$table, array $columns): void {
+		foreach ($columns as $column) {
+			if (is_numeric($table[$column] ?? null)) {
+				$table[$column] = (int)$table[$column];
+			}
+		}
+	}
 }

@@ -281,6 +281,9 @@ SQL;
 		$res = $this->fetchAssoc($sql);
 		/** @var list<array{'id':int,'name':string,'category':string,'count':int}>|null $res */
 		if (is_array($res)) {
+			foreach ($res as &$dao) {
+				FreshRSS_DatabaseDAO::pdoInt($dao, ['id', 'count']);
+			}
 			return $res;
 		}
 		return [];
@@ -304,6 +307,9 @@ SQL;
 		$res = $this->fetchAssoc($sql);
 		/** @var list<array{'id':int,'name':string,'last_date':int,'nb_articles':int}>|null $res */
 		if (is_array($res)) {
+			foreach ($res as &$dao) {
+				FreshRSS_DatabaseDAO::pdoInt($dao, ['id', 'last_date', 'nb_articles']);
+			}
 			return $res;
 		}
 		return [];
